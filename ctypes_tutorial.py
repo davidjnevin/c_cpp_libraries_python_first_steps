@@ -4,10 +4,11 @@ import os
 # Passing and returning c_char_p strings
 
 print("=" * 20)
-path = os.getcwd()
+
+path = os.getcwd()  # set the local path
 clibrary = ctypes.CDLL(os.path.join(path, "clibrary.so"))
 
-func = clibrary.display
+func = clibrary.display  # define the function
 func.argtypes = [ctypes.c_char_p, ctypes.c_int]  # Many args possible
 func.restype = ctypes.c_char_p  # but only one return type.
 func(b"David", 46)
@@ -44,7 +45,7 @@ free_func.argtypes = [ctypes.POINTER(ctypes.c_char_p)]
 
 cstring_pointer = alloc_func()
 
-cstring = ctypes.c_char_p.from_buffer(cstring_pointer)
+cstring = ctypes.c_char_p.from_buffer(cstring_pointer)  # use a buffer for the string
 print(cstring.value)
 free_func(cstring_pointer)
 
@@ -53,17 +54,17 @@ free_func(cstring_pointer)
 print("=" * 20)
 print("\n")
 
-num = ctypes.c_int(100)
-ptr = ctypes.pointer(num)
+num = ctypes.c_int(100)  # create a ctypes int
+ptr = ctypes.pointer(num)  # create a pointer to the int
 
-print(ptr.contents)
+print(ptr.contents)  # dereference the pointer to get the value
 
 ## Using factory function to create a new ctypes type.
 
-ptr2 = ctypes.POINTER(ctypes.c_int)
+ptr2 = ctypes.POINTER(ctypes.c_int)  # create a new ctypes type
 
-ptr2.contents = num
-print(ptr2.contents)
+ptr2.contents = num  # assign the value to the new type
+print(ptr2.contents)  # dereference the pointer to get the value
 
 # ctypes.POINTER(type): This function is a factory function that creates a new ctypes type. It doesn't create a pointer; it creates a new type that can represent pointers to a particular other type.
 # ctypes.pointer(obj): This function actually creates a pointer to an existing ctypes object. For example, if i is a ctypes.c_int instance, then ctypes.pointer(i) returns a pointer to i.
@@ -77,29 +78,32 @@ print("\n")
 # create and array of c_ints, default value is zero and then set to 0, 1, 2, 3, ...
 # and pass it to c
 
-values = (ctypes.c_int * 10)()
-for i in range(len(values)):
+values = (ctypes.c_int * 10)()  # create an array of 10 c_ints
+for i in range(len(values)):  # set the values
     values[i] = i
 
 path = os.getcwd()
 clibrary_array_sum = ctypes.CDLL(os.path.join(path, "clibrary_array_sum.so"))
 
-sum = clibrary_array_sum.sumArray(values, len(values))
-print("This sum is calculated and returned from a c library: ", sum)
+sum = clibrary_array_sum.sumArray(values, len(values))  # pass the array to c
+print("This sum is calculated and returned from a c library: ", sum)  # print the result
 
 
 print("=" * 20)
 print("\n")
 
 # create an array in c and pass it to python
-print([x for x in values])
-clibrary_array_inc = ctypes.CDLL(os.path.join(path, "clibrary_array_inc.so"))
+print([x for x in values])  # print the array
+clibrary_array_inc = ctypes.CDLL(
+    os.path.join(path, "clibrary_array_inc.so")
+)  # load the library
 
 
-clibrary_array_inc.incArray.restype = ctypes.POINTER(ctypes.c_int)
+clibrary_array_inc.incArray.restype = ctypes.POINTER(
+    ctypes.c_int
+)  # set the return type
 
-new_array = clibrary_array_inc.incArray(values, len(values))
-print(new_array.contents)
+new_array = clibrary_array_inc.incArray(values, len(values))  # pass the array to c
 
-for i in range(len(values)):
+for i in range(len(10)):
     print(new_array[i])
