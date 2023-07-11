@@ -75,6 +75,7 @@ print("=" * 20)
 print("\n")
 
 # create and array of c_ints, default value is zero and then set to 0, 1, 2, 3, ...
+# and pass it to c
 
 values = (ctypes.c_int * 10)()
 for i in range(len(values)):
@@ -83,5 +84,22 @@ for i in range(len(values)):
 path = os.getcwd()
 clibrary_array_sum = ctypes.CDLL(os.path.join(path, "clibrary_array_sum.so"))
 
-func = clibrary_array_sum.sumArray
-# func.argtypes = [ctype.c_int]
+sum = clibrary_array_sum.sumArray(values, len(values))
+print("This sum is calculated and returned from a c library: ", sum)
+
+
+print("=" * 20)
+print("\n")
+
+# create an array in c and pass it to python
+print([x for x in values])
+clibrary_array_inc = ctypes.CDLL(os.path.join(path, "clibrary_array_inc.so"))
+
+
+clibrary_array_inc.incArray.restype = ctypes.POINTER(ctypes.c_int)
+
+new_array = clibrary_array_inc.incArray(values, len(values))
+print(new_array.contents)
+
+for i in range(len(values)):
+    print(new_array[i])

@@ -1,0 +1,11 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int* incArray(int* arr, int size) {
+  for (int i = 0; i < size; i++) {
+    arr[i]++;
+    printf("%i", arr[1]);
+  }
+  return arr;
+}
